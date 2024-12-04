@@ -2,6 +2,18 @@
 name = "umbrella"
 version = "0.1.0"
 edition = "2021"
+authors = ["John Arundel <john@bitfieldconsulting.com>"]
+description = """
+A simple weather client and CLI tool for the WeatherStack API.
+"""
+keywords = ["cli", "weather"]
+categories = ["command-line-utilities"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+documentation = "https://docs.rs/umbrella"
+homepage = "https://github.com/bitfield/umbrella"
+repository = "https://github.com/bitfield/umbrella"
+exclude = ["/.github/"]
 
 [dependencies]
 anyhow = "1.0.93"
