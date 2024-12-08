@@ -1,8 +1,11 @@
+use std::time::Duration;
+
 use anyhow::{bail, Context};
 use serde::Deserialize;
 
 use crate::{
-    temperature::{Celsius, Temperature}, Provider, Weather
+    temperature::{Celsius, Temperature},
+    Provider, Weather,
 };
 
 pub struct WeatherStack {
@@ -13,7 +16,7 @@ pub struct WeatherStack {
 impl WeatherStack {
     #[must_use]
     pub fn new(api_key: &str) -> Self {
-        Self{
+        Self {
             base_url: "https://api.weatherstack.com/current".to_string(),
             api_key: api_key.to_owned(),
         }
@@ -25,6 +28,7 @@ impl Provider for WeatherStack {
         let resp = reqwest::blocking::Client::new()
             .get(&self.base_url)
             .query(&[("query", location), ("access_key", &self.api_key)])
+            .timeout(Duration::from_secs(1))
             .send()?;
         resp.error_for_status_ref()?;
         deserialize(&resp.text()?)
@@ -81,9 +85,37 @@ fn deserialize(json: &str) -> anyhow::Result<Weather> {
 
 #[cfg(test)]
 mod tests {
+    use http::StatusCode;
+    use httpmock::{Method, MockServer};
+
     use std::fs;
 
     use super::*;
+
+    #[test]
+    fn get_weather_fn_makes_correct_api_call() {
+        let server = MockServer::start();
+        server.mock(|when, then| {
+            when.method(Method::GET)
+                .query_param("query", "London,UK")
+                .query_param("access_key", "dummy api key");
+            then.status(StatusCode::OK.into())
+                .header("content-type", "application/json")
+                .body_from_file("tests/data/weatherstack.json");
+        });
+        let mut ws = WeatherStack::new("dummy api key");
+        ws.base_url = server.base_url();
+        let weather = ws.get_weather("London,UK").unwrap();
+        assert_eq!(
+            weather,
+            Weather {
+                location: "London,United Kingdom".into(),
+                temperature: Temperature::from::<Celsius>(11.0),
+                summary: "Sunny".into(),
+            },
+            "wrong weather"
+        );
+    }
 
     #[test]
     fn deserialize_correctly_parses_test_data() {
@@ -94,7 +126,8 @@ mod tests {
                 location: "London,United Kingdom".into(),
                 temperature: Temperature::from::<Celsius>(11.0),
                 summary: "Sunny".into(),
-            }
+            },
+            "wrong weather"
         );
     }
 }
