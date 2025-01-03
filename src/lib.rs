@@ -1,3 +1,4 @@
+//! Client library for the Weatherstack API.
 use anyhow::{Context, Result};
 use reqwest::blocking::RequestBuilder;
 use serde_json::Value;
@@ -5,6 +6,7 @@ use serde_json::Value;
 use std::time::Duration;
 
 #[derive(Debug, PartialEq)]
+/// The weather conditions for a given location.
 pub struct Weather {
     pub location: String,
     pub temperature: Temperature,
@@ -12,25 +14,30 @@ pub struct Weather {
 }
 
 #[derive(Debug, PartialEq)]
+/// The temperature for a given location.
 pub struct Temperature(f64);
 
 impl Temperature {
     #[must_use]
+    /// Creates a Temperature from an `f64` value expressed in degrees Celsius.
     pub fn from_celsius(val: f64) -> Self {
         Self(val)
     }
 
     #[must_use]
+    /// Converts a Temperature to an `f64` value expressed in degrees Celsius.
     pub fn as_celsius(&self) -> f64 {
         self.0
     }
 
     #[must_use]
+    /// Converts a Temperature to an `f64` value expressed in degrees Fahrenheit.
     pub fn as_fahrenheit(&self) -> f64 {
         self.0 * 1.8 + 32.0
     }
 }
 
+/// Configuration for the Weatherstack client.
 pub struct Weatherstack {
     base_url: String,
     api_key: String,
@@ -38,6 +45,7 @@ pub struct Weatherstack {
 
 impl Weatherstack {
     #[must_use]
+    /// Creates a `Weatherstack` with the specified API key.
     pub fn new(api_key: &str) -> Self {
         Self {
             base_url: "https://api.weatherstack.com/current".to_string(),
@@ -45,7 +53,13 @@ impl Weatherstack {
         }
     }
 
-    pub fn get_weather(&self, location: &str) -> anyhow::Result<Weather> {
+    /// Queries Weatherstack for `location` and returns the weather.
+    ///
+    /// # Errors
+    ///
+    /// Returns any errors sending the request, HTTP status errors from the API
+    /// server, or errors deserializing the JSON response.
+    pub fn get_weather(&self, location: &str) -> Result<Weather> {
         let resp = self.request(location).send()?;
         resp.error_for_status_ref()?;
         deserialize(&resp.text()?)
