@@ -1,6 +1,6 @@
 [package]
 name = "umbrella"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["John Arundel <john@bitfieldconsulting.com>"]
 description = """
@@ -19,8 +19,9 @@ exclude = ["/.github/"]
 anyhow = "1.0.93"
 clap = { version = "4.5.22", features = ["derive", "env"] }
 reqwest = { version = "0.12.9", features = ["blocking", "json"] }
-serde = { version = "1.0.215", features = ["derive"] }
+serde = { version = "1.0.215" }
 serde_json = "1.0.133"
+url = "2.5.4"
 
 [dev-dependencies]
 http = "1.2.0"
