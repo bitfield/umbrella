@@ -1,4 +1,4 @@
-//! Client library for the Weatherstack API.
+#![doc = include_str!("../README.md")]
 use anyhow::{Context, Result};
 use reqwest::blocking::RequestBuilder;
 use serde_json::Value;

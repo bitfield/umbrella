@@ -8,26 +8,26 @@
 
 A simple weather reporting tool in Rust, using the Weatherstack API.
 
-# Installation
+## Installation
 
 ```sh
 cargo install umbrella
 ```
 
-# Usage
+## Usage
 
 First, create a [Weatherstack account](https://weatherstack.com/signup/free), and obtain your API key.
 
 ```sh
 export WEATHERSTACK_API_KEY=xxx
-umbrella London,UK
+umbrella London, UK
 ```
 
-```
+```txt
 Sunny 4.0ºC (London, United Kingdom)
 ```
 
-# Units
+## Units
 
 To report temperature in Fahrenheit, use the `--fahrenheit` (or `-f`) flag:
 
@@ -35,6 +35,6 @@ To report temperature in Fahrenheit, use the `--fahrenheit` (or `-f`) flag:
 umbrella --fahrenheit Los Angeles, USA
 ```
 
-```
+```txt
 Fog 50.0ºF (Los Angeles, United States of America)
 ```
