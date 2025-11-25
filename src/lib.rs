@@ -166,7 +166,7 @@ mod tests {
                 .path("/current")
                 .query_param("query", "London,UK")
                 .query_param("access_key", "dummy api key");
-            then.status(StatusCode::OK.into())
+            then.status(StatusCode::OK)
                 .header("content-type", "application/json")
                 .body_from_file("tests/data/weatherstack.json");
         });

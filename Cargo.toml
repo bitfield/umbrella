@@ -26,5 +26,5 @@ url = "2.5.4"
 [dev-dependencies]
 assert_cmd = "2.0.17"
 http = "1.2.0"
-httpmock = "0.7.0"
+httpmock = "0.8.2"
 predicates = "3.1.3"
